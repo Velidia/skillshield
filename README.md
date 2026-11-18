@@ -6,6 +6,13 @@ An on-chain integrity & community-review registry for third-party AI agent
 skills in the Binance Agentic Wallet ecosystem — built for the
 **Binance Wallet × BNB Chain Agent ID Hackathon**.
 
+## Live
+
+- **Website:** https://skillshield.velidia.web.id/
+- **Registry contract (BSC mainnet):**
+  [`0xcc3D46b7ACCff20B576afB7454BaF21B4Be36A38`](https://bscscan.com/address/0xcc3D46b7ACCff20B576afB7454BaF21B4Be36A38)
+  — source verified, Sourcify exact match (see [DEPLOYMENT.md](DEPLOYMENT.md))
+
 ## The problem
 
 Agent skills are packages of markdown instructions (`SKILL.md` + reference

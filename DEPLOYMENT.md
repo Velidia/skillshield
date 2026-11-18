@@ -13,3 +13,5 @@
   https://repo.sourcify.dev/56/0xcc3D46b7ACCff20B576afB7454BaF21B4Be36A38
 - The contract has no owner, no admin functions, no upgrade path and holds
   no funds; the deployer has no special power over it.
+- **Live site:** https://skillshield.velidia.web.id/ — the static app from
+  this repo (`web/` + `lib/`), hosted on the owner's omarchy server.
