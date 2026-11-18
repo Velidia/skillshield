@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SkillShield — Verify agent skills before your agent runs them</title>
+<meta name="description" content="On-chain integrity and community-review registry for third-party AI agent skills in the Binance Agentic Wallet ecosystem.">
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="#top" aria-label="SkillShield home">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 2l8 3v6c0 5-3.4 9.4-8 11C7.4 20.4 4 16 4 11V5l8-3z" stroke="#f0b90b" stroke-width="1.8"/><path d="M8.5 12l2.4 2.4L15.6 9.6" stroke="#f0b90b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span>Skill<strong>Shield</strong></span>
+    </a>
+    <nav>
+      <a href="#problem">Problem</a>
+      <a href="#checker">Checker</a>
+      <a href="#registry">Registry</a>
+      <a href="#publish">Publish &amp; review</a>
+      <a href="#docs">Docs</a>
+    </nav>
+    <button id="connectBtn" class="btn btn-ghost" type="button">Connect wallet</button>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero wrap">
+    <p class="eyebrow">Agent ID Hackathon · BNB Chain</p>
+    <h1>Verify the skill<br>before your agent runs it.</h1>
+    <p class="lede">Third-party projects hand your AI agent a <code>SKILL.md</code> and ask it to
+    follow the instructions inside — often with Developer Mode on. One edited line can redirect
+    funds or steal credentials, and today nothing proves the file you received is the file the
+    publisher released. SkillShield anchors a SHA-256 digest of every skill package on-chain,
+    published and reviewed exclusively by Binance Agent ID holders.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#checker">Check a skill package</a>
+      <a class="btn btn-ghost" href="#docs">How it works</a>
+    </div>
+    <p id="deployNotice" class="notice" hidden></p>
+  </section>
+
+  <section id="problem" class="wrap section">
+    <h2>The problem</h2>
+    <div class="grid-3">
+      <article class="card">
+        <h3>Skills are instructions, not just code</h3>
+        <p>An agent skill is a package of markdown an AI reads and obeys. OWASP ranks malicious
+        skills as a critical threat: payloads hide in plain prose — fake setup steps, injected
+        commands, credential requests — and run with the agent's full permissions.</p>
+      </article>
+      <article class="card">
+        <h3>Distribution has no integrity check</h3>
+        <p>Official Binance skills live in the Binance Skills Hub. Third-party project skills are
+        copied from websites, chats and repos with no signature, no hash, and no way to detect a
+        file that was swapped or edited after publication.</p>
+      </article>
+      <article class="card">
+        <h3>Reviews today are sybil bait</h3>
+        <p>Stars and likes on a web page can be farmed with throwaway accounts. A warning about a
+        malicious skill is only worth anything if each reviewer is one real, accountable identity.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="checker" class="wrap section">
+    <h2>Checker</h2>
+    <p class="section-lede">Drop a skill package below. The digest is computed locally in your
+    browser — files never leave your machine — and compared against the on-chain registry.</p>
+    <div id="dropZone" class="dropzone" tabindex="0">
+      <p><strong>Drag &amp; drop</strong> a skill folder or files here</p>
+      <p class="muted">or</p>
+      <div class="row">
+        <label class="btn btn-ghost">Select folder<input id="folderInput" type="file" webkitdirectory hidden></label>
+        <label class="btn btn-ghost">Select files<input id="filesInput" type="file" multiple hidden></label>
+      </div>
+    </div>
+    <div id="checkResult" class="result" hidden></div>
+  </section>
+
+  <section id="registry" class="wrap section">
+    <h2>Registry explorer</h2>
+    <p class="section-lede">Every entry below is read directly from the SkillShieldRegistry
+    contract on BNB Chain. Publishers and reviewers are Agent ID holders; one Agent ID, one stance.</p>
+    <div id="registryList" class="registry-list"><p class="muted">Loading…</p></div>
+  </section>
+
+  <section id="publish" class="wrap section">
+    <h2>Publish &amp; review</h2>
+    <p class="section-lede">Writes require a connected wallet holding an Agent ID on BNB Chain.
+    Your stance is keyed to your Agent ID (<code>tokenId = keccak256(handle)</code>), not just
+    your address, and you can replace it at any time — counts update on-chain.</p>
+    <div class="grid-2">
+      <form id="registerForm" class="card form">
+        <h3>Register a skill</h3>
+        <label>Content hash (bytes32)<input name="contentHash" required placeholder="0x…" pattern="0x[0-9a-fA-F]{64}"></label>
+        <label>Name<input name="name" required placeholder="my-skill"></label>
+        <label>Version<input name="version" required placeholder="1.0.0"></label>
+        <label>Package URI<input name="uri" placeholder="ipfs://… or https://…"></label>
+        <button class="btn btn-primary" type="submit">Register</button>
+        <p class="form-msg muted"></p>
+      </form>
+      <form id="reviewForm" class="card form">
+        <h3>Review a skill</h3>
+        <label>Skill ID<input name="skillId" required type="number" min="1" placeholder="1"></label>
+        <label>Stance
+          <select name="trusted">
+            <option value="true">Trust — I inspected this exact package</option>
+            <option value="false">Flag — something is wrong</option>
+          </select>
+        </label>
+        <label>Flag reason
+          <select name="reason">
+            <option value="0">— (trust)</option>
+            <option value="1">Malicious code</option>
+            <option value="2">Prompt injection</option>
+            <option value="3">Impersonation</option>
+            <option value="4">Unsafe permissions</option>
+            <option value="5">Other</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Submit review</button>
+        <p class="form-msg muted"></p>
+      </form>
+    </div>
+  </section>
+
+  <section id="docs" class="wrap section">
+    <h2>Docs &amp; honest limitations</h2>
+    <div class="card prose">
+      <h3>What a registration proves</h3>
+      <p>The publisher's Agent ID published this exact package digest at a recorded time. If the
+      package you hold hashes to the same digest, it is bit-for-bit the package that was
+      registered. A changed file — even one byte — produces a different digest and fails the check.</p>
+      <h3>What it does not prove</h3>
+      <p><strong>A registered or trusted skill is not guaranteed safe.</strong> A publisher can
+      register a malicious package; community trust is a signal, not an audit. SkillShield makes
+      tampering detectable and warnings accountable — you still inspect what you install, keep
+      Developer Mode off when you don't need it, and never let an agent bypass your own
+      transaction confirmation.</p>
+      <h3>Canonical hashing</h3>
+      <p>For every file in the package: <code>path + "\0" + sha256hex(file) + "\n"</code>, paths
+      sorted byte-wise. The content hash is the SHA-256 of the concatenated lines. The package
+      carries a <code>skillshield.json</code> manifest (name, version, declared target contracts
+      and permissions) inside the hashed content, so a permission change is a hash change.
+      Full specification: <code>SPEC.md</code> in the project repository.</p>
+      <h3>Why Agent ID</h3>
+      <p>Agent IDs are soulbound — one per account, non-transferable. Keying publishers and
+      reviewers by Agent ID token makes review farming cost a real identity, and lets any other
+      dApp read the registry's verdicts with a single contract call.</p>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap footer">
+  <p>SkillShield — built for the Binance Wallet × BNB Chain Agent ID Hackathon.
+  Contract holds no funds, has no owner, and never asks for approvals.</p>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
